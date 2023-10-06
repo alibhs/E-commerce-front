@@ -39,7 +39,6 @@ export default function Header(){
           <StyledNav>
             <NavLink href={"/"}>Anasayfa</NavLink>
             <NavLink href={"/products"}>Ürünler</NavLink>
-            <NavLink href={"/categories"}>Kategoriler</NavLink>
             <NavLink href={"/account"}>Hesap</NavLink>
             <NavLink href={"/cart"}>Sepet ({cartProducts.length})</NavLink>
           </StyledNav>

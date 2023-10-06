@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import { useDebugValue, useState,useEffect } from "react";
 import axios from "axios";
 import NewProducts from "@/components/NewProduct";
+import HeaderCategories from "@/components/HeaderCategories";
 
 
 export default  function HomePage(){
@@ -28,6 +29,7 @@ export default  function HomePage(){
   return (
     <div>
       <Header />
+      <HeaderCategories />
       <Featured product={product} />
       <NewProducts products={products}  />
     </div>
