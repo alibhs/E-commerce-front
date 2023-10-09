@@ -7,6 +7,8 @@ import styled from "styled-components";
 import axios from "axios";
 import Table from "@/components/Table";
 import CustomInput from "@/components/CustomInput";
+import Link from "next/link";
+import ProductsGrid from "@/components/ProductsGrid";
 
 const ColumnsWrapper = styled.div`
 display:grid;
@@ -49,10 +51,15 @@ const CityHolder = styled.div`
 display:flex;
 gap:5px;
 `;
+const NavLink = styled(Link)`
+color:#000000;
+text-decoration:none;
+
+`;
 
 export default function CartPage(){
-    const {cartProducts,addProduct,removeProduct} = useContext(CartContext);
-    const [product,setProduct] = useState([]);
+    const {cartProducts,addProduct,removeProduct,clearCart} = useContext(CartContext);
+    const [products,setProducts] = useState([]);
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
     const [phoneNumber,setPhoneNumber] = useState('');
@@ -60,6 +67,8 @@ export default function CartPage(){
     const [postalCode,setPostalCode] = useState('');
     const [streetAddress,setStreetAddress] = useState('');
     const [country,setCountry] = useState('');
+    const [isSuccess,setIsSuccess] = useState(false);
+
 
     useEffect(() => {
       const fetchProducts = async () => {
@@ -74,7 +83,7 @@ export default function CartPage(){
             console.error(`Error fetching product with id ${productId}:`, error);
           }
         }
-        setProduct(productsData);
+        setProducts(productsData);
       };  
       fetchProducts();
     }, [cartProducts]);
@@ -91,7 +100,7 @@ export default function CartPage(){
     let total = 0;
     for(const cartProduct of cartProducts){
         
-        const currentProd = product.find(p=> p.productId === cartProduct.productId);
+        const currentProd = products.find(p=> p.productId === cartProduct.productId);
 
         total += currentProd?.price * cartProduct?.quantity;
     }
@@ -99,7 +108,6 @@ export default function CartPage(){
 
     function goToPayment(e){
       e.preventDefault();
-      console.log(cartProducts)
        axios.post("https://localhost:44374/api/Order/add",{
         orderedProducts:  cartProducts,
         address: {
@@ -113,6 +121,24 @@ export default function CartPage(){
         },
         orderDate: new Date()
       });
+      setIsSuccess(true);
+      clearCart();
+      }
+
+      if (isSuccess) {
+        return (
+          <>
+            <Header />
+            <Center>
+              <ColumnsWrapper>
+                <Box>
+                  <h1>Siparişiniz Oluşturulmuştur!</h1>
+                  <NavLink href={"/"}>Anasayfaya dönmek için tıklayınız.</NavLink>
+                </Box>
+              </ColumnsWrapper>
+            </Center>
+          </>
+        );
       }
 
     return (
@@ -122,7 +148,6 @@ export default function CartPage(){
           <ColumnsWrapper>
             <Box>
               <h2>Sepet</h2>
-
               {!cartProducts?.length && <div>Sepetiniz Boş</div>}
               {cartProducts?.length > 0 && (
                 <Table>
@@ -138,7 +163,7 @@ export default function CartPage(){
                       <tr key={p.productId}>
                         <ProductInfoCell>
                           <ProductImageBox>
-                            <img src={product.find(x => x.productId === p.productId)?.imageURL} alt="" />
+                            <img src={products.find(x => x.productId === p.productId)?.imageURL} alt="" />
                           </ProductImageBox>
                           {p.productName}
                         </ProductInfoCell>
@@ -157,7 +182,7 @@ export default function CartPage(){
                             +
                           </Button>
                         </td>
-                        <td>{product.find(x => x.productId === p.productId)?.price} TL</td>
+                        <td>{products.find(x => x.productId === p.productId)?.price} TL</td>
                       </tr>
                     ))}
                     <tr>

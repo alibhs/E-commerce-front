@@ -30,7 +30,8 @@ text-decoration:none;
 
 `;
 export default function Header(){
-  const {quantity} = useContext(CartContext);
+  const {totalQuantity} = useContext(CartContext);
+  
     return (
       <StyledHeader>
         <Center>
@@ -40,7 +41,7 @@ export default function Header(){
             <NavLink href={"/"}>Anasayfa</NavLink>
             <NavLink href={"/products"}>Ürünler</NavLink>
             {/* <NavLink href={"/account"}>Hesap</NavLink> */}
-            <NavLink href={"/cart"}>Sepet ({quantity < 0 ? 0 : quantity})</NavLink>
+            <NavLink href={"/cart"}>Sepet ({totalQuantity})</NavLink>
           </StyledNav>
          </Wrapper>
         </Center>

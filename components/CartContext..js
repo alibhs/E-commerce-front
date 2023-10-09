@@ -5,13 +5,6 @@ export const CartContext = createContext({});
 export function CartContextProvider({children}){
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const [cartProducts,setCartProducts] = useState([]);
-  const [quantity,setQuantity] = useState(() => {
-    if (ls && ls.getItem("quantity")) {
-      return parseInt(ls.getItem("quantity"));
-    } else {
-      return 0;
-    }
-  });
 
   useEffect(() => {
     if (cartProducts?.length > 0) {
@@ -35,7 +28,6 @@ export function CartContextProvider({children}){
       newCart[index].quantity += 1;
       setCartProducts(newCart);
     }
-    setQuantity(prev => prev + 1 );
   }
 
   function removeProduct(productId){
@@ -48,18 +40,22 @@ export function CartContextProvider({children}){
         ls?.clear();
       }
       setCartProducts(newCart);
-      setQuantity(prev => prev - 1 );
     }
   }
 
   function clearCart() {
     setCartProducts([]);
-    setQuantity(0);
     ls?.removeItem("cart");
   }
 
+let totalQuantity = 0;
+
+for (let i = 0; i < cartProducts.length; i++) {
+  totalQuantity += cartProducts[i].quantity;
+}
+
   return(
-    <CartContext.Provider value={{quantity,cartProducts,setCartProducts,addProduct,removeProduct,clearCart}}>
+    <CartContext.Provider value={{totalQuantity,cartProducts,setCartProducts,addProduct,removeProduct,clearCart}}>
       {children}
     </CartContext.Provider>
   )
