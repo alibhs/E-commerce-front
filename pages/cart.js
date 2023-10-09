@@ -37,7 +37,7 @@ border-radius:10px;
 img{
     max-width:100px;
     max-height:100px;
-
+    
  }
 `;
 
@@ -60,15 +60,12 @@ export default function CartPage(){
     const [postalCode,setPostalCode] = useState('');
     const [streetAddress,setStreetAddress] = useState('');
     const [country,setCountry] = useState('');
-    
 
     useEffect(() => {
       const fetchProducts = async () => {
-        const uniqueProductIds = Array.from(new Set(cartProducts)); // Tekrarlanan ürünleri kaldır
-        console.log(uniqueProductIds);
-    
+        const uniqueProductIds = Array.from(new Set(cartProducts.map((product) => product.productId))); // Tekrarlanan ürünleri kaldır  
         const productsData = [];
-    
+  
         for (const productId of uniqueProductIds) {
           try {
             const response = await axios.get(`https://localhost:44374/api/Products/getById?productId=${productId}`);
@@ -77,18 +74,13 @@ export default function CartPage(){
             console.error(`Error fetching product with id ${productId}:`, error);
           }
         }
-    
-        // Tüm istekler tamamlandığında setProducts ile sonuçları ayarla
         setProduct(productsData);
-      };
-    
-      // cartProducts değiştiğinde fetchProducts'i çağır
+      };  
       fetchProducts();
     }, [cartProducts]);
-
+  
     function moreOfThisProduct(productId){
     addProduct(productId);
-    console.log(cartProducts)
 
     }
 
@@ -97,26 +89,29 @@ export default function CartPage(){
     }
     
     let total = 0;
-    for(const id of cartProducts){
+    for(const cartProduct of cartProducts){
         
-        const price = product.find(p=> p.productId === id)?.price || 0;
-        total += price;
+        const currentProd = product.find(p=> p.productId === cartProduct.productId);
+
+        total += currentProd?.price * cartProduct?.quantity;
     }
 
 
     function goToPayment(e){
       e.preventDefault();
-       axios.post("https://localhost:44374/api/AddressControler/add",{
-          userId: 5,
+      console.log(cartProducts)
+       axios.post("https://localhost:44374/api/Order/add",{
+        orderedProducts:  cartProducts,
+        address: {
           street: streetAddress,
           city: city,
           email: email,
           postalCode: postalCode,
           country: country,
           phoneNumber: phoneNumber,
-          fullName: name,
-          // Quantity:5, // 10
-          // ProductIds: cartProducts, //19, 20, 21
+          fullName: name
+        },
+        orderDate: new Date()
       });
       }
 
@@ -139,11 +134,11 @@ export default function CartPage(){
                     </tr>
                   </thead>
                   <tbody>
-                    {product.map((p) => (
+                    {cartProducts.map((p) => (
                       <tr key={p.productId}>
                         <ProductInfoCell>
                           <ProductImageBox>
-                            <img src={p.imageURL} alt="" />
+                            <img src={product.find(x => x.productId === p.productId)?.imageURL} alt="" />
                           </ProductImageBox>
                           {p.productName}
                         </ProductInfoCell>
@@ -154,19 +149,15 @@ export default function CartPage(){
                             -
                           </Button>
                           <QuantityLabel>
-                            {
-                              cartProducts.filter((id) => id === p.productId)
-                                .length
-                            }
+                         {p.quantity}
                           </QuantityLabel>
-
                           <Button
                             onClick={() => moreOfThisProduct(p.productId)}
                           >
                             +
                           </Button>
                         </td>
-                        <td>{p.price} TL</td>
+                        <td>{product.find(x => x.productId === p.productId)?.price} TL</td>
                       </tr>
                     ))}
                     <tr>

@@ -21,7 +21,6 @@ padding-top:30px;
 export default function Categories(){
     const router = useRouter();
     const [product,setProduct] = useState([]);
-    const [category,setCategory] = useState([]);
     const {categoryId} = router.query;
     useEffect(()=>{
         axios.get(
@@ -34,10 +33,9 @@ export default function Categories(){
   return (
     <>
         <Header />
-        <HeaderCategories />
         <Center>
           <Title>
-            {product.length} Adet Ürün Bulundu
+            {product.length}  Adet ürün bulundu
           </Title>
           <StyledProductsGrid>
         {product.map((p) => (
