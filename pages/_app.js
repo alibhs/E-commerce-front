@@ -1,4 +1,5 @@
 import { CartContextProvider } from "@/components/CartContext.";
+import { AuthProvider } from "@/context/AuthProvider";
 import {createGlobalStyle} from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
@@ -17,15 +18,18 @@ const GlobalStyles = createGlobalStyle`
     margin:0;
     font-family: 'Poppins', sans-serif;
   }
+  
 `;
 
 export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyles />
-      <CartContextProvider>
-       <Component {...pageProps} />
-      </CartContextProvider>
+      <AuthProvider>
+        <CartContextProvider>
+          <Component {...pageProps} />
+        </CartContextProvider>
+      </AuthProvider>
     </>
   );
 }

@@ -8,6 +8,7 @@ import axios from "axios";
 import Table from "@/components/Table";
 import CustomInput from "@/components/CustomInput";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 import ProductsGrid from "@/components/ProductsGrid";
 
 const ColumnsWrapper = styled.div`
@@ -58,6 +59,7 @@ text-decoration:none;
 `;
 
 export default function CartPage(){
+    const router = useRouter();
     const {cartProducts,addProduct,removeProduct,clearCart} = useContext(CartContext);
     const [products,setProducts] = useState([]);
     const [name,setName] = useState('');
@@ -122,6 +124,10 @@ export default function CartPage(){
         orderDate: new Date()
       });
       setIsSuccess(true);
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
+    clearTimeout(router);
       clearCart();
       }
 
@@ -133,7 +139,7 @@ export default function CartPage(){
               <ColumnsWrapper>
                 <Box>
                   <h1>Siparişiniz Oluşturulmuştur!</h1>
-                  <NavLink href={"/"}>Anasayfaya dönmek için tıklayınız.</NavLink>
+                  <NavLink href={"/"}>Anasayfaya yönlendiriliyorsunuz</NavLink>
                 </Box>
               </ColumnsWrapper>
             </Center>
@@ -148,7 +154,7 @@ export default function CartPage(){
           <ColumnsWrapper>
             <Box>
               <h2>Sepet</h2>
-              {!cartProducts?.length && <div>Sepetiniz Boş</div>}
+              {!cartProducts?.length && <div>Sepetinizde ürün bulunmamaktadır</div>}
               {cartProducts?.length > 0 && (
                 <Table>
                   <thead>
@@ -163,7 +169,14 @@ export default function CartPage(){
                       <tr key={p.productId}>
                         <ProductInfoCell>
                           <ProductImageBox>
-                            <img src={products.find(x => x.productId === p.productId)?.imageURL} alt="" />
+                            <img
+                              src={
+                                products.find(
+                                  (x) => x.productId === p.productId
+                                )?.imageURL
+                              }
+                              alt=""
+                            />
                           </ProductImageBox>
                           {p.productName}
                         </ProductInfoCell>
@@ -173,16 +186,20 @@ export default function CartPage(){
                           >
                             -
                           </Button>
-                          <QuantityLabel>
-                         {p.quantity}
-                          </QuantityLabel>
+                          <QuantityLabel>{p.quantity}</QuantityLabel>
                           <Button
                             onClick={() => moreOfThisProduct(p.productId)}
                           >
                             +
                           </Button>
                         </td>
-                        <td>{products.find(x => x.productId === p.productId)?.price} TL</td>
+                        <td>
+                          {
+                            products.find((x) => x.productId === p.productId)
+                              ?.price
+                          }{" "}
+                          TL
+                        </td>
                       </tr>
                     ))}
                     <tr>
@@ -197,11 +214,13 @@ export default function CartPage(){
             {!!cartProducts?.length && (
               <Box>
                 <h2>Sipariş Bilgisi</h2>
-                <form method="post" action="">
+                <form onSubmit={goToPayment}>
                   <CustomInput
                     type="text"
                     placeholder="Ad Soyad"
                     value={name}
+                    required
+                    pattern="/^[a-z ,.'-]+$/i"
                     name="name"
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -209,12 +228,16 @@ export default function CartPage(){
                     type="email"
                     placeholder="Email"
                     value={email}
+                    required
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     name="email"
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <CustomInput
                     type="text"
+                    pattern="[0-9]*"
                     placeholder="Telefon Numarası"
+                    required
                     value={phoneNumber}
                     name="phoneNumber"
                     onChange={(e) => setPhoneNumber(e.target.value)}
@@ -223,13 +246,16 @@ export default function CartPage(){
                     <CustomInput
                       type="text"
                       placeholder="Şehir"
+                      required
                       value={city}
                       name="city"
                       onChange={(e) => setCity(e.target.value)}
                     />
                     <CustomInput
                       type="text"
+                      pattern="[0-9]*"
                       placeholder="Posta Kodu"
+                      required
                       value={postalCode}
                       name="postalCode"
                       onChange={(e) => setPostalCode(e.target.value)}
@@ -239,6 +265,7 @@ export default function CartPage(){
                   <CustomInput
                     type="text"
                     placeholder="Sokak Adı"
+                    required
                     value={streetAddress}
                     name="streetAddress"
                     onChange={(e) => setStreetAddress(e.target.value)}
@@ -246,11 +273,12 @@ export default function CartPage(){
                   <CustomInput
                     type="text"
                     placeholder="İlçe"
+                    required
                     value={country}
                     name="country"
                     onChange={(e) => setCountry(e.target.value)}
                   />
-                  <Button block primary onClick={goToPayment} type="submit">
+                  <Button block primary type="submit">
                     Siparişi Oluştur
                   </Button>
                 </form>

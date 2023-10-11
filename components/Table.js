@@ -7,12 +7,12 @@ th{
     text-transform: uppercase;
     color:#E10514;
     font-weight: 600;
-    font-size: .7rem;
+    font-size: .8rem;
 
 }
 td{
     border-top: 1px solid #E10514;
-
+    font-weight:bold;
 }
 `;
 

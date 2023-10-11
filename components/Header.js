@@ -3,10 +3,13 @@ import styled from "styled-components";
 import Center from "./Center";
 import { useContext } from "react";
 import { CartContext } from "./CartContext.";
+import { AuthProvider } from "@/context/AuthProvider";
 
 const StyledHeader = styled.header`
 background-color: #e10514;
-
+position: sticky;
+top: 0px;
+z-index: 1;
 `;
 
 const Logo = styled(Link)`
@@ -40,7 +43,10 @@ export default function Header(){
           <StyledNav>
             <NavLink href={"/"}>Anasayfa</NavLink>
             <NavLink href={"/products"}>Ürünler</NavLink>
-            {/* <NavLink href={"/account"}>Hesap</NavLink> */}
+            <AuthProvider>
+            <NavLink href={"/login"}>Giriş Yap</NavLink>
+            <NavLink href={"/register"}>Kayıt Ol</NavLink>
+            </AuthProvider>
             <NavLink href={"/cart"}>Sepet ({totalQuantity})</NavLink>
           </StyledNav>
          </Wrapper>

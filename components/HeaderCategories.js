@@ -6,6 +6,7 @@ import axios from "axios";
 
 const StyledHeader = styled.header`
 background-color: #1B1B1B;
+
 `;
 
 const Wrapper = styled.div`

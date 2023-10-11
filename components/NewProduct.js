@@ -5,7 +5,7 @@ import ProductsGrid from "./ProductsGrid";
 
 const Title = styled.h2`
 font-size:2rem;
-margin:30px 0 20px;
+margin:20px 0 20px;
 `;
 
 export default function NewPrducts({products}){
