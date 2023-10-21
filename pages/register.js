@@ -67,26 +67,20 @@ const Register = () => {
     },[email,pwd,matchPwd])
     
     const handleSubmit = async (e) => {
+      debugger
         e.preventDefault();
         const v1 = EMAIL_REGEX.test(email);
         const v2 = PWD_REGEX.test(pwd); 
         const v3 = NAME_REGEX.test(firstname);  
-        const v4 = NAME_REGEX.test(lastname);  
-        if (!v1 || !v2 ||!v3 ||!v4) {
-          debugger
-
+        if (!v1 || !v2 ||!v3) {
             setErrMsg("Geçersiz Giriş");
             return;
-
         }
         try {
           const response = await axios.post(
             "https://localhost:44374/api/Auth/register",
             { email: email, password: pwd, firstname:firstname,lastname:lastname },
           );
-        
-          console.log(response.data);
-          console.log(JSON.stringify(response.data));
           setSuccess(true);
           setTimeout(() => {
             router.push('/');
@@ -105,161 +99,201 @@ const Register = () => {
     }
 
   return (
-    <body className={styles.body}>
+    <>
       {success ? (
-        <section className={`${styles.section}`}>
-          <h1 className={styles.a}>Kayıt Başarılı</h1>
-          <p>
-            <NavLink href={"/"}>Anasayfaya yönlendiriliyorsunuz</NavLink>
-          </p>
-        </section>
+        <div className={styles.body}>
+          <section className={`${styles.section}`}>
+            <h1 className={styles.a}>Kayıt Başarılı</h1>
+            <p>
+              <NavLink href={"/"}>Anasayfaya yönlendiriliyorsunuz</NavLink>
+            </p>
+          </section>
+        </div>
       ) : (
-        <section className={`${styles.section}`}>
-          <p 
-            ref={errRef}
-            className={`${errMsg ? styles.errmsg : styles.offscreen}`}
-            aria-live="assertive"
-          >
-            {errMsg}
-          </p>
-          <h1 className={styles.a} >Kayıt Ol</h1>
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={`${styles.label} ${styles.a}`} htmlFor="firstname">
-              Adınız:
-            </label>
-            <input className={styles.textarea}
-              type="text"
-              id="firstname"
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-              aria-invalid={`${errMsg ? styles.errmsg : styles.offscreen}`}
-              onFocus={() => setFirstNameFocus(true)}
-              onBlur={() => setFirstNameFocus(false)}
-            />
-
-            <label className={`${styles.label} ${styles.a}`} htmlFor="lastname">
-              Soyadınız:
-            </label>
-            <input className={styles.textarea}
-              type="text"
-              id="lastname"
-              onChange={(e) => setLastName(e.target.value)}
-              required
-              aria-invalid={`${validFirstname ? styles.errmsg : styles.offscreen}`}
-              onFocus={() => setLastNameFocus(true)}
-              onBlur={() => setLastNameFocus(false)}
-            />
-
-            <label className={`${styles.label} ${styles.a}`} htmlFor="email">
-              Email:
-              <span className={`${validEmail ? styles.valid : styles.hide}`}>
-              </span>
-              <span className={`${validEmail || !email ? styles.hide : styles.invalid}`}>
-              </span>
-            </label>
-            <input className={styles.textarea}
-              type="text"
-              id="email"
-              ref={emailRef}
-              autoComplete="off"
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              aria-invalid={validEmail ? "false" : "true"}
-              aria-describedby="uidnote"
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
-            />
+        <div className={styles.body}>
+          <section className={`${styles.section}`}>
             <p
-              id="uidnote"
-              className={
-                `${emailFocus && email && !validEmail ? styles.instructions : styles.offscreen} ${styles.a}`
-              }
+              ref={errRef}
+              className={`${errMsg ? styles.errmsg : styles.offscreen}`}
+              aria-live="assertive"
             >
-              @ işareti bulunamlıdır. <br />
+              {errMsg}
             </p>
+            <h1 className={styles.a}>Kayıt Ol</h1>
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <label
+                className={`${styles.label} ${styles.a}`}
+                htmlFor="firstname"
+              >
+                Adınız:
+              </label>
+              <input
+                className={styles.textarea}
+                type="text"
+                id="firstname"
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                aria-invalid={`${errMsg ? styles.errmsg : styles.offscreen}`}
+                onFocus={() => setFirstNameFocus(true)}
+                onBlur={() => setFirstNameFocus(false)}
+              />
 
-            <label className={`${styles.label} ${styles.a}`} htmlFor="password">
-              Şifre:
-              <span className={`${validPwd ? styles.valid : styles.hide}`}>
-              </span>
-              <span className={`${validPwd || !pwd ? styles.hide : styles.invalid}`}>
-              </span>
-            </label>
-            <input className={styles.textarea}
-              type="password"
-              id="password"
-              onChange={(e) => setPwd(e.target.value)}
-              required
-              aria-invalid={validPwd ? "false" : "true"}
-              aria-describedby="pwdnote"
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
-            />
+              <label
+                className={`${styles.label} ${styles.a}`}
+                htmlFor="lastname"
+              >
+                Soyadınız:
+              </label>
+              <input
+                className={styles.textarea}
+                type="text"
+                id="lastname"
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                aria-invalid={`${
+                  validFirstname ? styles.errmsg : styles.offscreen
+                }`}
+                onFocus={() => setLastNameFocus(true)}
+                onBlur={() => setLastNameFocus(false)}
+              />
 
-            <p
-              id="pwdnote"
-              className={`${pwdFocus && !validPwd ? styles.instructions : styles.offscreen} ${styles.a}`}
-            >
-              8 karakterden fazla olmalıdır.
-              <br />
-              Büyük harf küçük harf sayı ve özel karakter içermelidir.
-              <br />
-              <span aria-label="exclamation mark">!</span>
-              <span aria-label="at symbol">@</span>
-              <span aria-label="hashtag">#</span>
-              <span aria-label="dollar sign">$</span>
-              <span aria-label="percent">%</span>
-            </p>
+              <label className={`${styles.label} ${styles.a}`} htmlFor="email">
+                Email:
+                <span
+                  className={`${validEmail ? styles.valid : styles.hide}`}
+                ></span>
+                <span
+                  className={`${
+                    validEmail || !email ? styles.hide : styles.invalid
+                  }`}
+                ></span>
+              </label>
+              <input
+                className={styles.textarea}
+                type="text"
+                id="email"
+                ref={emailRef}
+                autoComplete="off"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                aria-invalid={validEmail ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
+              />
+              <p
+                id="uidnote"
+                className={`${
+                  emailFocus && email && !validEmail
+                    ? styles.instructions
+                    : styles.offscreen
+                } ${styles.a}`}
+              >
+                @ işareti bulunamlıdır. <br />
+              </p>
 
-            <label className={`${styles.label} ${styles.a}`} htmlFor="confirm_pwd">
-              Şifreyi Tekrarla:
-              <span className={`${validMatch && matchPwd ? styles.valid : styles.hide}`}>
-              </span>
-              <span className={`${validMatch && matchPwd ? styles.hide : styles.invalid}`}>
-              </span>
-            </label>
-            <input className={styles.textarea}
-              type="password"
-              id="confirm_pwd"
-              onChange={(e) => setMatchPwd(e.target.value)}
-              required
-              aria-invalid={validMatch ? "false" : "true"}
-              aria-describedby="confirmnote"
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
+              <label
+                className={`${styles.label} ${styles.a}`}
+                htmlFor="password"
+              >
+                Şifre:
+                <span
+                  className={`${validPwd ? styles.valid : styles.hide}`}
+                ></span>
+                <span
+                  className={`${
+                    validPwd || !pwd ? styles.hide : styles.invalid
+                  }`}
+                ></span>
+              </label>
+              <input
+                className={styles.textarea}
+                type="password"
+                id="password"
+                onChange={(e) => setPwd(e.target.value)}
+                required
+                aria-invalid={validPwd ? "false" : "true"}
+                aria-describedby="pwdnote"
+                onFocus={() => setPwdFocus(true)}
+                onBlur={() => setPwdFocus(false)}
+              />
+
+              <p
+                id="pwdnote"
+                className={`${
+                  pwdFocus && !validPwd ? styles.instructions : styles.offscreen
+                } ${styles.a}`}
+              >
+                8 karakterden fazla olmalıdır.
+                <br />
+                Büyük harf küçük harf sayı ve özel karakter içermelidir.
+                <br />
+                <span aria-label="exclamation mark">!</span>
+                <span aria-label="at symbol">@</span>
+                <span aria-label="hashtag">#</span>
+                <span aria-label="dollar sign">$</span>
+                <span aria-label="percent">%</span>
+              </p>
+
+              <label
+                className={`${styles.label} ${styles.a}`}
+                htmlFor="confirm_pwd"
+              >
+                Şifreyi Tekrarla:
+                <span
+                  className={`${
+                    validMatch && matchPwd ? styles.valid : styles.hide
+                  }`}
+                ></span>
+                <span
+                  className={`${
+                    validMatch && matchPwd ? styles.hide : styles.invalid
+                  }`}
+                ></span>
+              </label>
+              <input
+                className={styles.textarea}
+                type="password"
+                id="confirm_pwd"
+                onChange={(e) => setMatchPwd(e.target.value)}
+                required
+                aria-invalid={validMatch ? "false" : "true"}
+                aria-describedby="confirmnote"
+                onFocus={() => setMatchFocus(true)}
+                onBlur={() => setMatchFocus(false)}
+              />
 
               <p
                 id="confirmnote"
-                className={
-                  `${matchFocus && !validMatch ? styles.instructions : styles.offscreen} ${styles.a}`
-                }
+                className={`${
+                  matchFocus && !validMatch
+                    ? styles.instructions
+                    : styles.offscreen
+                } ${styles.a}`}
               >
                 Girilen iki şifre aynı olmalıdır.
                 <br />
               </p>
 
-            <button className={styles.button}
-              disabled={
-                !validEmail ||
-                !validPwd ||
-                !validMatch 
-                  ? true
-                  : false
-              }
-            >
-              Kayıt Ol
-            </button>
-          </form>
-          <p className={styles.a}> 
-            Hesabınız Var Mı? <br />
-            <span className={styles.line}>
-              <NavLink href={"/login"}>Giriş Yap</NavLink>
-            </span>
-          </p>
-        </section>
+              <button
+                className={styles.button}
+                disabled={
+                  !validEmail || !validPwd || !validMatch ? true : false
+                }
+              >
+                Kayıt Ol
+              </button>
+            </form>
+            <p className={styles.a}>
+              Hesabınız Var Mı? <br />
+              <span className={styles.line}>
+                <NavLink href={"/login"}>Giriş Yap</NavLink>
+              </span>
+            </p>
+          </section>
+        </div>
       )}
-    </body>
+    </>
   );
 }
 

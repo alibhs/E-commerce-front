@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 const NavLink = styled(Link)`
 color:#fff;
 text-decoration:none;
+
 `;
 
 
@@ -65,17 +66,20 @@ const Login = () => {
   }
 
   return (
-    <body className={`${styles.body}`}>
+    <>
       {success ? (
-       <section className={styles.section}>
+        <div className={styles.body}>
+ <section className={styles.section}>
           <h1 className={styles.a}>Giriş Başarılı</h1>
           <br />
           <p className={styles.a}>
             <NavLink href={"/"}>Anasayfaya yönlendiriliyorsunuz</NavLink>
           </p>
         </section>
+        </div>
+      
       ) : (
-        <>
+        <div className={styles.body}>
           <section className={styles.section}>
             <p
               ref={errRef}
@@ -110,7 +114,7 @@ const Login = () => {
                 value={pwd}
                 required
               />
-              <button class={styles.button}>Giriş Yap</button>
+              <button className={styles.button}>Giriş Yap</button>
               <p class={styles.a}>
                 Hesabınız yok mu?
                 <br />
@@ -122,9 +126,9 @@ const Login = () => {
               </p>
             </form>
           </section>
-        </>
+        </div>
       )}
-    </body>
+    </>
   );
 };
 

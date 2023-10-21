@@ -5,6 +5,7 @@ import { useState,useEffect } from "react";
 import axios from "axios";
 import ProductsGrid from "@/components/ProductsGrid";
 import Title from "@/components/Title";
+import HeaderCategories from "@/components/HeaderCategories";
 
 export default function ProductsPage(){
   const [products,setProducts] = useState([]);
@@ -16,6 +17,7 @@ export default function ProductsPage(){
     return (
       <>
         <Header />
+        <HeaderCategories />
         <Center>
           <Title>Ürünler</Title>
           <ProductsGrid products = {products} />
